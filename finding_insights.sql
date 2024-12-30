@@ -113,10 +113,36 @@ WHERE
     );
 
 #4. **Pending Transactions**: Lists all transactions that are currently pending.
+SELECT 
+    *
+FROM
+    transaction
+WHERE
+    tx_status LIKE 'Pending';
 
 #5. **Average Transaction Amount per Cryptocurrency**: Calculates the average transaction amount for each cryptocurrency.
+select * 
+from transaction t join cryptocurrency c on t.crypto_id = c.crypto_id;
 
-#6. Most Popular Cryptocurrency (Crypto That is hold by most user)
+select crypto_name, Format(avg(amount),2) as average_tx_vol 
+from transaction t join cryptocurrency c on t.crypto_id = c.crypto_id
+group by c.crypto_id;
+
+#6. Users with Pending Transactions
 select * 
 from user u left join transaction t on u.user_id = t.user_id
-join cryptocurrency c on t.crypto_id = c.crypto_id;
+where tx_status like 'pending';
+
+#7. Transaction History of a Specific User
+select * 
+from user u left join transaction t on u.user_id = t.user_id
+where u.user_id = 2;
+
+#8. Users with the Most Diverse Cryptocurrency Holdings
+SELECT 
+    CONCAT(first_name, ' ', last_name) AS full_name, count(distinct(uw.crypto_id))
+FROM
+    user u
+        JOIN
+    user_wallet uw ON u.user_id = uw.user_id
+    group by u.user_id;
